@@ -1,0 +1,1113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FUEZ ID Card Generator</title>
+
+<style>
+:root {
+  --green: #086b3a;
+  --dark-green: #064b2a;
+  --light-green: #eaf6ef;
+  --gold: #f2c94c;
+  --text: #17251d;
+  --muted: #637268;
+  --border: #d8e5dc;
+  --background: #f2f7f3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  color: var(--text);
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+header {
+  background: linear-gradient(120deg,
+    var(--dark-green), var(--green));
+  color: white;
+  padding: 18px 5%;
+  box-shadow: 0 5px 20px #063d2722;
+}
+
+.brand {
+  max-width: 1150px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.brand img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  background: white;
+  border-radius: 50%;
+  padding: 3px;
+}
+
+.brand h1 {
+  margin: 0 0 6px;
+  font-size: clamp(17px, 3vw, 25px);
+}
+
+.brand p {
+  margin: 0;
+  color: #d8f0e0;
+  font-size: 13px;
+}
+
+main {
+  max-width: 1150px;
+  margin: auto;
+  padding: 30px 18px;
+}
+
+.intro {
+  margin-bottom: 24px;
+}
+
+.intro h2 {
+  font-size: clamp(27px, 4vw, 36px);
+  margin: 8px 0;
+}
+
+.intro p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 35px #0a41230e;
+}
+
+.panel-heading {
+  padding: 20px;
+  border-bottom: 1px solid #edf2ee;
+}
+
+.panel-heading h3 {
+  margin: 0 0 6px;
+}
+
+.panel-heading p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.panel-body {
+  padding: 20px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  background: #f0f5f1;
+  padding: 5px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  border: none;
+  border-radius: 9px;
+  padding: 12px;
+  color: var(--green);
+  background: transparent;
+  font-weight: bold;
+}
+
+.tab.active {
+  background: var(--green);
+  color: white;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 7px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  min-height: 45px;
+  padding: 11px;
+  border: 1px solid #cddbd1;
+  border-radius: 9px;
+  background: white;
+  color: var(--text);
+}
+
+.field input:focus,
+.field select:focus {
+  outline: 2px solid #a5d8b8;
+  border-color: var(--green);
+}
+
+.btn {
+  width: 100%;
+  min-height: 45px;
+  padding: 12px;
+  border: none;
+  border-radius: 9px;
+  font-weight: bold;
+}
+
+.primary {
+  color: white;
+  background: var(--green);
+}
+
+.primary:hover {
+  background: var(--dark-green);
+}
+
+.secondary {
+  background: var(--light-green);
+  color: var(--green);
+  border: 1px solid #c8e4d1;
+}
+
+.outline {
+  background: white;
+  color: var(--green);
+  border: 1px solid #a9cdb6;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.alert {
+  display: none;
+  padding: 12px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+  font-size: 13px;
+}
+
+.alert.show {
+  display: block;
+}
+
+.error {
+  background: #fff1f0;
+  color: #b42318;
+}
+
+.success {
+  background: #eaf8ef;
+  color: #086b3a;
+}
+
+.preview-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.status {
+  background: #f0f3f1;
+  color: #65736a;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.status.ready {
+  background: #e5f7eb;
+  color: var(--green);
+}
+
+.card-stage {
+  min-height: 270px;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f0f5f1;
+  border: 1px dashed #c6d8cb;
+  border-radius: 12px;
+}
+
+.card-frame {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 8px 24px #153c2520;
+  line-height: 0;
+}
+
+.card-frame img.template {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.card-frame img.qr {
+  display: none;
+  position: absolute;
+  object-fit: contain;
+  left: 50.1%;
+  top: 43%;
+  width: 31.2%;
+  height: 47.9%;
+}
+
+.card-frame.staff img.qr {
+  left: 21.9%;
+  top: 42.3%;
+  width: 55.7%;
+  height: 34.8%;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 12px;
+}
+
+.tips {
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f0faf3;
+  color: #355a43;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 20px;
+}
+
+footer strong {
+  color: var(--green);
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .card-stage {
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 430px) {
+  .brand img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-body {
+    padding: 15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <img src="assets/logo.jpg"
+         alt="Federal University of Education Zaria logo">
+         <link rel="icon" href="assets/logo.jpg">
+
+    <div>
+      <h1>Federal University of Education, Zaria</h1>
+      <p>Directorate of ICT · ID Card QR Generating Portal</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <div style="color:var(--green);font-weight:bold;
+                letter-spacing:2px;font-size:12px">
+      ICT FUEZ, ID CARD UNIT
+    </div>
+
+    <h2>FUEZ ID Card Generator</h2>
+
+    <p>
+      Generate QR codes for student and staff ID cards.
+      Preview the card, download it as a PNG image,
+      or print the completed card.
+    </p>
+  </section>
+
+  <div class="layout">
+
+    <!-- FORM SECTION -->
+    <section class="panel">
+      <div class="panel-heading">
+        <h3>Enter ID Details</h3>
+        <p>All fields for the selected card type are required.</p>
+      </div>
+
+      <div class="panel-body">
+
+        <div class="tabs">
+          <button type="button" id="studentTab"
+                  class="tab active" aria-pressed="true">
+            STUDENT
+          </button>
+
+          <button type="button" id="staffTab"
+                  class="tab" aria-pressed="false">
+            STAFF
+          </button>
+        </div>
+
+        <div id="alert" class="alert" role="alert"
+             aria-live="polite"></div>
+
+        <form id="idForm">
+
+          <div class="field">
+            <label for="fullName">FULL NAME *</label>
+            <input id="fullName" name="fullName"
+                   placeholder="Enter Full Name"
+                   autocomplete="name"
+                   maxlength="120" required>
+          </div>
+
+          <!-- STUDENT ONLY -->
+          <div class="field" id="regField">
+            <label for="regNo">REGISTRATION NUMBER*</label>
+            <input id="regNo" name="regNo"
+                   placeholder="Enter Registration Number"
+                   maxlength="80" required>
+          </div>
+
+          <!-- STAFF ONLY -->
+          <div class="field" id="staffNoField" hidden>
+            <label for="staffNo">STAFF NUMBER *</label>
+            <input id="staffNo" name="staffNo"
+                   placeholder="Enter Staff Number"
+                   maxlength="80" disabled>
+          </div>
+
+          <div class="field">
+            <label for="department">DEPARTMENT / UNIT *</label>
+            <select id="department" name="department" required>
+              <option value="">Select Department / Unit</option>
+            </select>
+          </div>
+
+          <!-- STAFF ONLY -->
+          <div class="field" id="rankField" hidden>
+            <label for="rank">RANK *</label>
+            <select id="rank" name="rank" disabled>
+              <option value="">Select Rank</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn primary">
+            Generate QR Code
+          </button>
+
+          <div class="actions" id="cardActions" hidden>
+            <button type="button" id="downloadBtn"
+                    class="btn secondary">
+              Download PNG
+            </button>
+
+            <button type="button" id="printBtn"
+                    class="btn outline">
+              Print Card
+            </button>
+          </div>
+
+        </form>
+
+        <div class="tips">
+          <strong>Important:</strong>
+          Enter the correct information. The generated QR
+          code contains the details supplied in this form.
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PREVIEW SECTION -->
+    <section class="panel">
+      <div class="panel-heading">
+        <h3>Card Preview</h3>
+        <p>Preview and generated QR code.</p>
+      </div>
+
+      <div class="panel-body">
+
+        <div class="preview-label">
+          <strong id="previewKind">Student ID Card</strong>
+          <span id="status" class="status">Awaiting details</span>
+        </div>
+
+        <div class="card-stage">
+          <div class="card-frame" id="cardFrame">
+
+            <img id="templateImg"
+                 class="template"
+                 src="assets/STUDENT ID BACK.jpg"
+                 alt="Student landscape ID card">
+
+            <img id="qrImg"
+                 class="qr"
+                 alt="Generated QR code">
+          </div>
+        </div>
+
+        <p class="note" id="previewNote">
+          Complete the required fields and generate your QR code.
+        </p>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <strong>FUEZ · Directorate of ICT</strong>
+  <p>Education, Service and Digital Innovation</p>
+</footer>
+
+<script>
+"use strict";
+
+/* CARD TEMPLATE CONFIGURATION */
+
+const TEMPLATES = {
+  student: {
+    file: "assets/STUDENT ID BACK.jpg",
+    width: 1020,
+    height: 660,
+    qrX: 511,
+    qrY: 284,
+    qrWidth: 318,
+    qrHeight: 316
+  },
+
+  staff: {
+    file: "assets/STAFF ID BACK.jpg",
+    width: 644,
+    height: 1022,
+    qrX: 141,
+    qrY: 432,
+    qrWidth: 359,
+    qrHeight: 356
+  }
+};
+
+/* DEPARTMENT OPTIONS */
+
+const DEPARTMENTS = [
+  "MANAGEMENT",
+  "OFFICE OF THE VICE CHANCELLOR",
+  "REGISTRY",
+  "BURSARY",
+  "ESTATE",
+  "MAINTENANCE",
+  "PROCUREMENT",
+  "ENVIRONMENTAL UNIT",
+  "PHYSICAL PLANNING",
+  "EDUCATIONAL MANAGEMENT",
+  "EDUCATIONAL TECHNOLOGY",
+  "EDUCATIONAL FOUNDATIONS",
+  "LIBRARY",
+  "EDUCATIONAL PSYCHOLOGY",
+  "EARLY CHILDHOOD EDUCATION",
+  "SPECIAL NEEDS EDUCATION",
+  "ADULT AND CONTINUING EDUCATION",
+  "PRIMARY EDUCATION",
+  "COMPUTER SCIENCE EDUCATION",
+  "GUIDANCE AND COUNSELLING",
+  "ENGLISH EDUCATION/LITERATURE IN ENGLISH",
+  "FRENCH EDUCATION",
+  "LANGUAGE ARTS & COMMUNICATION",
+  "ARABIC EDUCATION",
+  "CHRISTIAN RELIGIOUS STUDIES (CRS)",
+  "ISLAMIC STUDIES",
+  "HAUSA EDUCATION",
+  "SOCIAL STUDIES AND CIVIC EDUCATION",
+  "YORUBA",
+  "IGBO",
+  "HEALTH EDUCATION",
+  "HUMAN KINETICS",
+  "ENVIRONMENTAL EDUCATION",
+  "PHYSICS EDUCATION",
+  "CHEMISTRY EDUCATION",
+  "BIOLOGY EDUCATION",
+  "INTEGRATED SCIENCE",
+  "MATHEMATICS EDUCATION",
+  "GEOGRAPHY EDUCATION",
+  "POLITICAL SCIENCE",
+  "CREATIVE ARTS EDUCATION",
+  "BUSINESS EDUCATION",
+  "HOME ECONOMICS",
+  "AGRICULTURAL EDUCATION",
+  "ECONOMICS EDUCATION",
+  "LIBRARY AND INFORMATION SCIENCE",
+  "ENTREPRENEURSHIP",
+  "HEALTH UNIT",
+  "GENERAL STUDIES EDUCATION",
+  "FINE AND APPLIED ARTS",
+  "DIRECTORATE OF INFORMATION & PROTOCOL",
+  "B.ED. EDUCATIONAL TECHNOLOGY",
+  "B.ED. EARLY CHILDHOOD EDUCATION",
+  "B.ED. SPECIAL NEEDS EDUCATION",
+  "B.ED. ADULT AND CONTINUING EDUCATION",
+  "B.ED. PRIMARY EDUCATION",
+  "B.ED. GUIDANCE AND COUNSELLING",
+  "B.A. ED. FRENCH EDUCATION",
+  "B.A. ED. ARABIC EDUCATION",
+  "B.ED. ISLAMIC STUDIES",
+  "B.A. ED. HAUSA EDUCATION",
+  "B.ED. SOCIAL STUDIES AND CIVIC EDUCATION",
+  "B.A. ED. YORUBA",
+  "B.A. ED. IGBO",
+  "B.SC. ED. HEALTH EDUCATION",
+  "B.SC. ED. HUMAN KINETICS",
+  "B.SC. ED. PHYSICS EDUCATION",
+  "B.SC. ED. CHEMISTRY EDUCATION",
+  "B.SC. ED. BIOLOGY EDUCATION",
+  "B.SC. ED. INTEGRATED SCIENCE",
+  "B.SC. ED. MATHEMATICS EDUCATION",
+  "B.SC. ED. COMPUTER SCIENCE EDUCATION",
+  "B.SC. ED. GEOGRAPHY EDUCATION",
+  "B.SC. ED. POLITICAL SCIENCE",
+  "B.A. ED. CREATIVE ARTS EDUCATION",
+  "B.SC. ED. BUSINESS EDUCATION",
+  "B.SC. ED. HOME ECONOMICS",
+  "B.SC. ED. AGRICULTURAL EDUCATION",
+  "B.SC. ED. ECONOMICS EDUCATION",
+  "BLIS LIBRARY AND INFORMATION SCIENCE",
+  "B.ED. ENTREPRENEURSHIP"
+];
+
+/* STAFF RANK OPTIONS */
+
+const RANKS = [
+  "VICE CHANCELLOR",
+  "DEPUTY VICE CHANCELLOR",
+  "REGISTRAR",
+  "DEPUTY REGISTRAR",
+  "ASSISTANT DEPUTY REGISTRAR",
+  "ASSISTANT REGISTRAR",
+  "DIRECTOR",
+  "PRINCIPAL ASSISTANT REGISTRAR",
+  "SENIOR ASSISTANT REGISTRAR",
+  "PRINCIPAL EXECUTIVE OFFICER",
+  "ADMIN OFFICER",
+  "CHIEF CONFIDENTIAL SECRETARY",
+  "CHIEF DATA OPERATOR",
+  "EXECUTIVE OFFICER",
+  "CHIEF EXECUTIVE OFFICER",
+  "ASSISTANT CHIEF EXECUTIVE OFFICER",
+  "SENIOR EXECUTIVE OFFICER",
+  "DIRECTOR OF WORKS AND SERVICES",
+  "BURSAR",
+  "SENIOR STORE OFFICER",
+  "DEPUTY BURSAR",
+  "ASSISTANT DEPUTY BURSAR",
+  "PRINCIPAL ACCOUNTANT",
+  "FINANCE OFFICER",
+  "PROFESSOR",
+  "PRINCIPAL LECTURER",
+  "SENIOR LECTURER",
+  "CHIEF LECTURER",
+  "LECTURER I",
+  "LECTURER II",
+  "ASSISTANT LECTURER",
+  "CHIEF STORES OFFICER",
+  "CHIEF TECHNICIAN",
+  "CHEW (LOCUM)",
+  "CHIEF CLARICAL OFFICER(LOCUM)",
+  "HIGHER TECHNICIAN OFFICER",
+  "CHIEF EXECUTIVE HEALTH OFFICER",
+  "DEPUTY DIRECTOR PROGRAM ANALYST ICT",
+  "ASSISTANT CHIEF TECHNOLOGIST",
+  "SENIOR TECHNOLOGIST",
+  "ASSISTANT CHIEF TECHNICIAN",
+  "CHIEF COMMUNITY HEALTH ASSISTANT",
+  "CHIEF COMMUNITY ASSISTANT",
+  "PRINCIPAL LIBRARY OFFICER",
+  "DEPUTY DIRECTOR"
+];
+
+/* ELEMENT REFERENCES */
+
+const $ = id => document.getElementById(id);
+
+let mode = "student";
+let generatedText = "";
+let currentTemplate = TEMPLATES.student;
+
+/* POPULATE SELECT MENUS */
+
+function populateSelect(select, items, placeholder) {
+  select.replaceChildren();
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = placeholder;
+  select.appendChild(first);
+
+  [...new Set(items)].forEach(item => {
+    const option = document.createElement("option");
+    option.value = item;
+    option.textContent = item;
+    select.appendChild(option);
+  });
+}
+
+populateSelect(
+  $("department"),
+  DEPARTMENTS,
+  "Select department / unit"
+);
+
+populateSelect($("rank"), RANKS, "Select rank");
+
+/* MESSAGES */
+
+function showMessage(message, type = "error") {
+  const box = $("alert");
+  box.textContent = message;
+  box.className = "alert show " + type;
+}
+
+function clearMessage() {
+  $("alert").textContent = "";
+  $("alert").className = "alert";
+}
+
+/* CLEAR PREVIOUS QR */
+
+function resetGenerated() {
+  generatedText = "";
+
+  $("qrImg").removeAttribute("src");
+  $("qrImg").style.display = "none";
+
+  $("cardActions").hidden = true;
+
+  $("status").textContent = "Awaiting details";
+  $("status").className = "status";
+
+  $("previewNote").textContent =
+    "Complete the required fields and generate your QR code.";
+}
+
+/* SWITCH BETWEEN STUDENT AND STAFF */
+
+function setMode(nextMode) {
+  mode = nextMode;
+  currentTemplate = TEMPLATES[mode];
+
+  clearMessage();
+  resetGenerated();
+
+  $("studentTab").classList.toggle(
+    "active", mode === "student"
+  );
+
+  $("staffTab").classList.toggle(
+    "active", mode === "staff"
+  );
+
+  $("studentTab").setAttribute(
+    "aria-pressed", String(mode === "student")
+  );
+
+  $("staffTab").setAttribute(
+    "aria-pressed", String(mode === "staff")
+  );
+
+  /* Show only relevant fields */
+
+  $("regField").hidden = mode !== "student";
+  $("staffNoField").hidden = mode !== "staff";
+  $("rankField").hidden = mode !== "staff";
+
+  /* Make visible fields required */
+
+  $("regNo").required = mode === "student";
+  $("staffNo").required = mode === "staff";
+  $("rank").required = mode === "staff";
+
+  /* Disable hidden controls */
+
+  $("regNo").disabled = mode !== "student";
+  $("staffNo").disabled = mode !== "staff";
+  $("rank").disabled = mode !== "staff";
+
+  /* Clear fields from previous mode */
+
+  if (mode === "student") {
+    $("staffNo").value = "";
+    $("rank").value = "";
+  } else {
+    $("regNo").value = "";
+  }
+
+  /* Change card template */
+
+  $("templateImg").src = currentTemplate.file;
+
+  $("templateImg").alt =
+    mode === "student"
+      ? "Student landscape ID card template"
+      : "Staff portrait ID card template";
+
+  $("cardFrame").classList.toggle(
+    "staff", mode === "staff"
+  );
+
+  $("previewKind").textContent =
+    mode === "student"
+      ? "Student ID Card"
+      : "Staff ID Card";
+
+  $("previewNote").textContent =
+    mode === "student"
+      ? "Student card selected. Enter the required details."
+      : "Staff card selected. Enter the required details.";
+}
+
+$("studentTab").addEventListener(
+  "click", () => setMode("student")
+);
+
+$("staffTab").addEventListener(
+  "click", () => setMode("staff")
+);
+
+/* BUILD QR INFORMATION */
+
+function buildPayload() {
+  const name = $("fullName").value.trim();
+  const department = $("department").value.trim();
+
+  if (!name || !department) return "";
+
+  if (mode === "student") {
+    const regNo = $("regNo").value.trim();
+
+    if (!regNo) return "";
+
+    return [
+      "FUEZ ID Portal",
+      "Role: Student",
+      "Full Name: " + name,
+      "Reg No: " + regNo,
+      "Department: " + department
+    ].join("\n");
+  }
+
+  const staffNo = $("staffNo").value.trim();
+  const rank = $("rank").value.trim();
+
+  if (!staffNo || !rank) return "";
+
+  return [
+    "FUEZ ID Portal",
+    "Role: Staff",
+    "Full Name: " + name,
+    "Staff No: " + staffNo,
+    "Department: " + department,
+    "Rank: " + rank
+  ].join("\n");
+}
+
+/* QR CODE SERVICE */
+
+function qrEndpoint(text, size = 300) {
+  return "https://api.qrserver.com/v1/create-qr-code/"
+    + "?format=png&margin=0"
+    + "&size=" + size + "x" + size
+    + "&data=" + encodeURIComponent(text);
+}
+
+/* GENERATE QR */
+
+$("idForm").addEventListener("submit", event => {
+  event.preventDefault();
+  clearMessage();
+
+  if (!$("idForm").reportValidity()) return;
+
+  const payload = buildPayload();
+
+  if (!payload) {
+    showMessage("Please complete all required fields.");
+    return;
+  }
+
+  generatedText = payload;
+
+  const qr = $("qrImg");
+
+  qr.onload = () => {
+    qr.style.display = "block";
+
+    $("status").textContent = "QR Ready";
+    $("status").className = "status ready";
+
+    $("cardActions").hidden = false;
+
+    $("previewNote").textContent =
+      "QR code generated. Download or print your card.";
+
+    showMessage(
+      "QR code generated successfully.",
+      "success"
+    );
+  };
+
+  qr.onerror = () => {
+    resetGenerated();
+
+    showMessage(
+      "Unable to generate the QR code. Check your internet connection and try again."
+    );
+  };
+
+  qr.src = qrEndpoint(payload);
+});
+
+/* LOAD IMAGES FOR PNG EXPORT */
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+
+    image.crossOrigin = "anonymous";
+
+    image.onload = () => resolve(image);
+
+    image.onerror = () => reject(
+      new Error(
+        "Unable to load an image. Check the template filename and QR service connection."
+      )
+    );
+
+    image.src = src;
+  });
+}
+
+/* COMPOSE CARD */
+
+async function composeCard() {
+  if (!generatedText) {
+    throw new Error("Generate the QR code first.");
+  }
+
+  const template = currentTemplate;
+
+  const [background, qr] = await Promise.all([
+    loadImage(template.file),
+    loadImage(qrEndpoint(generatedText, 600))
+  ]);
+
+  const canvas = document.createElement("canvas");
+
+  canvas.width = template.width;
+  canvas.height = template.height;
+
+  const context = canvas.getContext("2d");
+
+  if (!context) {
+    throw new Error("Canvas is not supported in this browser.");
+  }
+
+  context.drawImage(
+    background, 0, 0,
+    template.width, template.height
+  );
+
+  context.drawImage(
+    qr,
+    template.qrX,
+    template.qrY,
+    template.qrWidth,
+    template.qrHeight
+  );
+
+  return canvas.toDataURL("image/png");
+}
+
+/* DOWNLOAD PNG */
+
+$("downloadBtn").addEventListener("click", async () => {
+  const button = $("downloadBtn");
+
+  button.disabled = true;
+  button.textContent = "Preparing...";
+
+  try {
+    const imageData = await composeCard();
+
+    const link = document.createElement("a");
+
+    link.href = imageData;
+
+    link.download = mode === "student"
+      ? "FUEZ_Student_ID_Card.png"
+      : "FUEZ_Staff_ID_Card.png";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    showMessage("Card PNG downloaded.", "success");
+
+  } catch (error) {
+    showMessage(error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Download PNG";
+  }
+});
+
+/* PRINT ONLY THE COMPOSED CARD */
+
+$("printBtn").addEventListener("click", async () => {
+  const button = $("printBtn");
+
+  button.disabled = true;
+  button.textContent = "Preparing...";
+
+  try {
+    const imageData = await composeCard();
+
+    const printWindow = window.open("", "_blank");
+
+    if (!printWindow) {
+      throw new Error(
+        "Printing was blocked. Allow pop-ups and try again."
+      );
+    }
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>FUEZ ID Card</title>
+        <meta charset="UTF-8">
+        <style>
+          @page { margin: 0; }
+          html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+          }
+          img {
+            display: block;
+            max-width: 100vw;
+            max-height: 100vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+          }
+        </style>
+      </head>
+      <body>
+        <img src="" alt="FUEZ ID Card">
+      </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+
+    printWindow.onload = () => {
+      printWindow.focus();
+      printWindow.print();
+    };
+
+  } catch (error) {
+    showMessage(error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Print Card";
+  }
+});
+
+/* INITIALIZE */
+
+setMode("student");
+</script>
+
+</body>
+</html>
